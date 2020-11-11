@@ -226,10 +226,10 @@ namespace Rheal_DatabaseOperations1
                         Report rp2 = new Report();
                         List<Employee> empList2 = new List<Employee>();
                         empList = rp2.getMaxSalaryPerDepartment();
-                        Console.WriteLine("Department\tMaxSalary");
+                        Console.WriteLine("EmployeeNo\tEmployeeName\tDepartment\tMaxSalary");
                         foreach (var item in empList)
                         {
-                            Console.WriteLine($"{item.EmployeeDeptName}\t\t{item.EmployeeSalary}");
+                            Console.WriteLine($"{item.EmployeeNo}\t\t{item.EmployeeName}\t\t{item.EmployeeDeptName}\t\t{item.EmployeeSalary}");
                         }
                         footerMessage();
                         break;
