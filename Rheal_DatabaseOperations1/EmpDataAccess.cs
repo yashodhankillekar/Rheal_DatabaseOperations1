@@ -27,7 +27,8 @@ namespace Rheal_DatabaseOperations1
                 conn.Open();
                 cmd = new SqlCommand();
                 cmd.Connection = conn;
-                cmd.CommandText = "select * from Employee inner join Department On EmployeeDeptId = DepartmentId order by EmployeeNo Asc";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "getEmployees";
                 SqlDataReader sqlDataReader = cmd.ExecuteReader();
                 while (sqlDataReader.Read())
                 {
@@ -40,13 +41,14 @@ namespace Rheal_DatabaseOperations1
                         EmployeeDeptName = sqlDataReader["DepartmentName"].ToString(),
                     });
                 }
+                sqlDataReader.Close();
                 conn.Close();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error Occured: {ex.Message}"); 
+                Console.WriteLine($"Error Occured: {ex.Message}");
             }
-                       
+
             return employees;
         }
 
@@ -79,7 +81,8 @@ namespace Rheal_DatabaseOperations1
                 cmd.Parameters.Add(empName);
                 cmd.Parameters.Add(empDept);
                 cmd.Parameters.Add(empSal);
-                cmd.CommandText = "Insert into Employee(EmployeeName,EmployeeDeptId,EmployeeSalary) values(@EmployeeName,@EmployeeDeptId,@EmployeeSalary)";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "insertEmployee";
                 int result = cmd.ExecuteNonQuery();
                 Console.WriteLine($"{result} Row(s) Inserted");
             }
@@ -93,50 +96,53 @@ namespace Rheal_DatabaseOperations1
 
         //update values in database
         public void updateEmployee(Employee emp)
-        {         
+        {
             try
             {
                 conn.Open();
                 cmd = new SqlCommand();
                 cmd.Connection = conn;
-                SqlParameter empNo = new SqlParameter()
+
+                SqlParameter pEmpNo = new SqlParameter()
                 {
                     ParameterName = "@EmployeeNo",
                     SqlDbType = SqlDbType.Int,
                     Value = emp.EmployeeNo
                 };
-                SqlParameter empName = new SqlParameter()
+                SqlParameter pEmpName = new SqlParameter()
                 {
                     ParameterName = "@EmployeeName",
                     SqlDbType = SqlDbType.VarChar,
+                    Size = 20,
                     Value = emp.EmployeeName
                 };
-                SqlParameter empDept = new SqlParameter()
+                SqlParameter pEmpDept = new SqlParameter()
                 {
                     ParameterName = "@EmployeeDeptId",
                     SqlDbType = SqlDbType.Int,
                     Value = emp.EmployeeDeptId
                 };
-                SqlParameter empSal = new SqlParameter()
+                SqlParameter pEmpSal = new SqlParameter()
                 {
                     ParameterName = "@EmployeeSalary",
                     SqlDbType = SqlDbType.Int,
                     Value = emp.EmployeeSalary
                 };
-                cmd.Parameters.Add(empNo);
-                cmd.Parameters.Add(empName);
-                cmd.Parameters.Add(empDept);
-                cmd.Parameters.Add(empSal);
-                cmd.CommandText = "Update Employee Set EmployeeName=@EmployeeName,EmployeeDeptId=@employeeDeptId,EmployeeSalary=@EmployeeSalary Where EmployeeNo=@EmployeeNo";
+                cmd.Parameters.Add(pEmpNo);
+                cmd.Parameters.Add(pEmpName);
+                cmd.Parameters.Add(pEmpDept);
+                cmd.Parameters.Add(pEmpSal);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "updateEmployee";
                 int result = cmd.ExecuteNonQuery();
                 Console.WriteLine($"{result} Row(s) Updated!");
                 conn.Close();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occured: {ex.Message}"); 
+                Console.WriteLine($"Error occured: {ex.Message}");
             }
-            
+
 
         }
 
@@ -155,14 +161,15 @@ namespace Rheal_DatabaseOperations1
                     Value = emp.EmployeeNo
                 };
                 cmd.Parameters.Add(empNo);
-                cmd.CommandText = "Delete from Employee Where EmployeeNo=@EmployeeNo";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "deleteEmployee";
                 int result = cmd.ExecuteNonQuery();
                 Console.WriteLine($"{result} Row(s) Deleted.");
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occured: {ex.Message}"); 
+                Console.WriteLine($"Error occured: {ex.Message}");
             }
             conn.Close();
         }
